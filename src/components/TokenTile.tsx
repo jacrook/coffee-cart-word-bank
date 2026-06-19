@@ -32,7 +32,7 @@ export function TokenTile({
       onKeyDown={onKeyDown}
       onFocus={onFocus}
     >
-      <TokenIcon icon={token.icon} />
+      <TokenIcon icon={token.icon} tokenId={token.id} />
       <span className="token-label">{token.label}</span>
     </div>
   );

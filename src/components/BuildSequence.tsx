@@ -98,7 +98,8 @@ export function BuildSequence({
                 isDrinkComplete && index === builtTokens.length - 1 ? ' celebrate' : ''
               }`}
             >
-              <TokenIcon icon={token.icon} className="build-slot-icon" /> {token.label}
+              <TokenIcon icon={token.icon} tokenId={token.id} className="build-slot-icon" />{' '}
+              {token.label}
             </div>
           ))
         )}

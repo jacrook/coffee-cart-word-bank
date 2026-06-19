@@ -23,10 +23,10 @@ def set_px(img: Image.Image, x: int, y: int, color: tuple[int, int, int, int]) -
 
 def draw_cup(height: int, sleeve_rows: int) -> Image.Image:
     img = Image.new('RGBA', (32, 32), TRANSPARENT)
-    top = 32 - height - 5
+    top = 32 - height - 4
     bottom = 31
-    left = 11
-    right = 20
+    left = 8
+    right = 23
 
     # Lid stack
     for x in range(left + 1, right):
@@ -65,9 +65,9 @@ def main() -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
 
     cups = {
-        'cup_8oz.png': draw_cup(height=12, sleeve_rows=4),
-        'cup_12oz.png': draw_cup(height=16, sleeve_rows=5),
-        'cup_16oz.png': draw_cup(height=20, sleeve_rows=6),
+        'cup_8oz.png': draw_cup(height=14, sleeve_rows=4),
+        'cup_12oz.png': draw_cup(height=18, sleeve_rows=5),
+        'cup_16oz.png': draw_cup(height=22, sleeve_rows=6),
     }
 
     for name, image in cups.items():

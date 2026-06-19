@@ -654,6 +654,11 @@ body {
   pointer-events: none;
 }
 
+.token-icon-img--cup {
+  width: clamp(30px, 4.8vmin, 44px);
+  height: clamp(36px, 5.6vmin, 52px);
+}
+
 .token-label {
   word-break: break-word;
   hyphens: auto;
