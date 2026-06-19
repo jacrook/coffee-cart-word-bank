@@ -1,0 +1,32 @@
+{
+  "rookie": {
+    "label": "Rookie Barista",
+    "bankSize": 10,
+    "categories": ["ingredient"],
+    "penalizeWrong": false,
+    "timed": false,
+    "timeLimitSeconds": 0,
+    "queueSize": 1,
+    "hintOnWrong": true
+  },
+  "shift_lead": {
+    "label": "Shift Lead",
+    "bankSize": 30,
+    "categories": ["ingredient", "action", "equipment"],
+    "penalizeWrong": true,
+    "timed": false,
+    "timeLimitSeconds": 0,
+    "queueSize": 1,
+    "hintOnWrong": true
+  },
+  "master": {
+    "label": "Master Zemi Barista",
+    "bankSize": 50,
+    "categories": ["*"],
+    "penalizeWrong": true,
+    "timed": true,
+    "timeLimitSeconds": 120,
+    "queueSize": 3,
+    "hintOnWrong": false
+  }
+}

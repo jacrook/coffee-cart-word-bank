@@ -1,0 +1,352 @@
+{
+  "drinks": [
+    {
+      "id": "espresso",
+      "name": "Espresso",
+      "sizes": {
+        "demitasse": {
+          "displayName": "Espresso",
+          "sequence": [
+            "demitasse",
+            "espresso_shot",
+            "serve"
+          ]
+        }
+      }
+    },
+    {
+      "id": "macchiato",
+      "name": "Macchiato",
+      "sizes": {
+        "8oz": {
+          "displayName": "8oz Macchiato",
+          "sequence": [
+            "cup_8oz",
+            "espresso_shot",
+            "light_foam",
+            "serve"
+          ]
+        }
+      }
+    },
+    {
+      "id": "cortado",
+      "name": "Cortado (Zemi Style)",
+      "sizes": {
+        "8oz": {
+          "displayName": "8oz Cortado",
+          "sequence": [
+            "cup_8oz",
+            "espresso_shot",
+            "steam_milk",
+            "foam",
+            "cinnamon",
+            "serve"
+          ]
+        }
+      }
+    },
+    {
+      "id": "cappuccino",
+      "name": "Cappuccino",
+      "sizes": {
+        "8oz": {
+          "displayName": "8oz Cappuccino",
+          "sequence": [
+            "cup_8oz",
+            "espresso_shot",
+            "steam_milk",
+            "foam",
+            "serve"
+          ]
+        },
+        "12oz": {
+          "displayName": "12oz Cappuccino",
+          "sequence": [
+            "cup_12oz",
+            "double_espresso_shot",
+            "steam_milk",
+            "foam",
+            "serve"
+          ]
+        }
+      }
+    },
+    {
+      "id": "latte",
+      "name": "Latte",
+      "sizes": {
+        "8oz": {
+          "displayName": "8oz Latte",
+          "sequence": [
+            "cup_8oz",
+            "espresso_shot",
+            "steam_milk",
+            "microfoam",
+            "serve"
+          ]
+        },
+        "12oz": {
+          "displayName": "12oz Latte",
+          "sequence": [
+            "cup_12oz",
+            "double_espresso_shot",
+            "steam_milk",
+            "microfoam",
+            "serve"
+          ]
+        }
+      }
+    },
+    {
+      "id": "cafe_con_leche",
+      "name": "Café con Leche",
+      "sizes": {
+        "12oz": {
+          "displayName": "12oz Café con Leche",
+          "sequence": [
+            "cup_12oz",
+            "drip_coffee",
+            "steam_milk",
+            "vanilla_syrup",
+            "serve"
+          ]
+        },
+        "16oz": {
+          "displayName": "16oz Café con Leche",
+          "sequence": [
+            "cup_16oz",
+            "drip_coffee",
+            "steam_milk",
+            "vanilla_syrup",
+            "serve"
+          ]
+        }
+      }
+    },
+    {
+      "id": "zemi_americano",
+      "name": "Zemi Americano",
+      "sizes": {
+        "12oz": {
+          "displayName": "12oz Zemi Americano",
+          "sequence": [
+            "cup_12oz",
+            "espresso_shot",
+            "hot_water",
+            "steam_milk",
+            "vanilla_syrup",
+            "serve"
+          ]
+        },
+        "16oz": {
+          "displayName": "16oz Zemi Americano",
+          "sequence": [
+            "cup_16oz",
+            "double_espresso_shot",
+            "hot_water",
+            "steam_milk",
+            "vanilla_syrup",
+            "serve"
+          ]
+        }
+      }
+    },
+    {
+      "id": "cold_brew",
+      "name": "Cold Brew",
+      "sizes": {
+        "16oz": {
+          "displayName": "16oz Cold Brew",
+          "sequence": [
+            "cup_16oz",
+            "ice",
+            "cold_brew",
+            "coco_topper",
+            "serve"
+          ]
+        }
+      }
+    },
+    {
+      "id": "apple_cider",
+      "name": "Apple Cider",
+      "sizes": {
+        "12oz": {
+          "displayName": "12oz Apple Cider",
+          "sequence": [
+            "cup_12oz",
+            "apple_cider_concentrate",
+            "hot_water",
+            "serve"
+          ]
+        },
+        "16oz": {
+          "displayName": "16oz Apple Cider",
+          "sequence": [
+            "cup_16oz",
+            "apple_cider_concentrate",
+            "hot_water",
+            "serve"
+          ]
+        }
+      }
+    },
+    {
+      "id": "coquito_latte",
+      "name": "Coquito Latte",
+      "description": "Iced — not steamed",
+      "sizes": {
+        "12oz": {
+          "displayName": "12oz Coquito Latte (Iced)",
+          "sequence": [
+            "cup_12oz",
+            "ice",
+            "coquito_mix",
+            "espresso_shot",
+            "oat_milk",
+            "cinnamon",
+            "serve"
+          ]
+        },
+        "16oz": {
+          "displayName": "16oz Coquito Latte (Iced)",
+          "sequence": [
+            "cup_16oz",
+            "ice",
+            "coquito_mix",
+            "double_espresso_shot",
+            "oat_milk",
+            "cinnamon",
+            "serve"
+          ]
+        }
+      }
+    },
+    {
+      "id": "mocha",
+      "name": "Mocha",
+      "sizes": {
+        "8oz": {
+          "displayName": "8oz Mocha",
+          "sequence": [
+            "cup_8oz",
+            "espresso_shot",
+            "cocoa_powder",
+            "steam_milk",
+            "serve"
+          ]
+        },
+        "12oz": {
+          "displayName": "12oz Mocha",
+          "sequence": [
+            "cup_12oz",
+            "double_espresso_shot",
+            "cocoa_powder",
+            "steam_milk",
+            "serve"
+          ]
+        }
+      }
+    },
+    {
+      "id": "peppermint_mocha",
+      "name": "Peppermint Mocha",
+      "sizes": {
+        "8oz": {
+          "displayName": "8oz Peppermint Mocha",
+          "sequence": [
+            "cup_8oz",
+            "espresso_shot",
+            "cocoa_powder",
+            "peppermint_syrup",
+            "steam_milk",
+            "serve"
+          ]
+        },
+        "12oz": {
+          "displayName": "12oz Peppermint Mocha",
+          "sequence": [
+            "cup_12oz",
+            "double_espresso_shot",
+            "cocoa_powder",
+            "peppermint_syrup",
+            "steam_milk",
+            "serve"
+          ]
+        }
+      }
+    },
+    {
+      "id": "hot_chocolate",
+      "name": "Hot Chocolate",
+      "sizes": {
+        "8oz": {
+          "displayName": "8oz Hot Chocolate",
+          "sequence": [
+            "cup_8oz",
+            "cocoa_powder",
+            "water",
+            "whole_milk",
+            "steam_milk",
+            "serve"
+          ]
+        },
+        "12oz": {
+          "displayName": "12oz Hot Chocolate",
+          "sequence": [
+            "cup_12oz",
+            "cocoa_powder",
+            "water",
+            "whole_milk",
+            "steam_milk",
+            "serve"
+          ]
+        }
+      }
+    },
+    {
+      "id": "chai_latte",
+      "name": "Masala Chai Tea Latte",
+      "sizes": {
+        "8oz": {
+          "displayName": "8oz Chai Latte",
+          "sequence": [
+            "cup_8oz",
+            "chai_concentrate",
+            "whole_milk",
+            "steam_milk",
+            "serve"
+          ]
+        },
+        "12oz": {
+          "displayName": "12oz Chai Latte",
+          "sequence": [
+            "cup_12oz",
+            "chai_concentrate",
+            "whole_milk",
+            "steam_milk",
+            "serve"
+          ]
+        }
+      }
+    },
+    {
+      "id": "dirty_chai",
+      "name": "Dirty Chai",
+      "sizes": {
+        "8oz": {
+          "displayName": "8oz Dirty Chai",
+          "sequence": [
+            "cup_8oz",
+            "espresso_shot",
+            "chai_concentrate",
+            "whole_milk",
+            "steam_ingredients",
+            "serve"
+          ]
+        }
+      }
+    }
+  ]
+}

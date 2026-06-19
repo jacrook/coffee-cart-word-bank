@@ -1,0 +1,39 @@
+{
+  "tokens": [
+    { "id": "cup_8oz", "label": "8oz Cup", "category": "equipment", "icon": "🥤" },
+    { "id": "cup_12oz", "label": "12oz Cup", "category": "equipment", "icon": "🥤" },
+    { "id": "cup_16oz", "label": "16oz Cup", "category": "equipment", "icon": "🥤" },
+    { "id": "demitasse", "label": "Demitasse Cup", "category": "equipment", "icon": "☕" },
+    { "id": "steaming_pitcher", "label": "Steaming Pitcher", "category": "equipment", "icon": "🫖" },
+    { "id": "espresso_machine", "label": "Espresso Machine", "category": "equipment", "icon": "⚙️" },
+    { "id": "portafilter", "label": "Portafilter", "category": "equipment", "icon": "🔧" },
+
+    { "id": "espresso_shot", "label": "Espresso Shot", "category": "ingredient", "icon": "☕" },
+    { "id": "double_espresso_shot", "label": "Double Espresso Shot", "category": "ingredient", "icon": "☕" },
+    { "id": "drip_coffee", "label": "Drip Coffee", "category": "ingredient", "icon": "🫗" },
+    { "id": "hot_water", "label": "Hot Water", "category": "ingredient", "icon": "💧" },
+    { "id": "water", "label": "Water", "category": "ingredient", "icon": "🚰" },
+    { "id": "cold_brew", "label": "Cold Brew", "category": "ingredient", "icon": "🧊" },
+    { "id": "whole_milk", "label": "Whole Milk", "category": "ingredient", "icon": "🥛" },
+    { "id": "steamed_milk", "label": "Steamed Milk", "category": "ingredient", "icon": "🥛" },
+    { "id": "oat_milk", "label": "Oat Milk", "category": "ingredient", "icon": "🌾" },
+    { "id": "fat_free_milk", "label": "Fat Free Milk", "category": "ingredient", "icon": "🥛" },
+    { "id": "foam", "label": "Foam", "category": "ingredient", "icon": "🫧" },
+    { "id": "light_foam", "label": "Light Foam", "category": "ingredient", "icon": "🫧" },
+    { "id": "microfoam", "label": "Microfoam", "category": "ingredient", "icon": "✨" },
+    { "id": "cocoa_powder", "label": "Cocoa Powder", "category": "ingredient", "icon": "🍫" },
+    { "id": "vanilla_syrup", "label": "Vanilla Syrup", "category": "ingredient", "icon": "🍯" },
+    { "id": "cinnamon_syrup", "label": "Cinnamon Syrup", "category": "ingredient", "icon": "🍯" },
+    { "id": "peppermint_syrup", "label": "Peppermint Syrup", "category": "ingredient", "icon": "🌿" },
+    { "id": "chai_concentrate", "label": "Chai Concentrate", "category": "ingredient", "icon": "🫖" },
+    { "id": "coquito_mix", "label": "Coquito Mix", "category": "ingredient", "icon": "🥥" },
+    { "id": "coco_topper", "label": "Coco Topper", "category": "ingredient", "icon": "🥥" },
+    { "id": "ice", "label": "Ice", "category": "ingredient", "icon": "🧊" },
+    { "id": "cinnamon", "label": "Cinnamon", "category": "ingredient", "icon": "✴️" },
+    { "id": "apple_cider_concentrate", "label": "Apple Cider Concentrate", "category": "ingredient", "icon": "🍎" },
+
+    { "id": "steam_milk", "label": "Steam Milk", "category": "action", "icon": "♨️" },
+    { "id": "steam_ingredients", "label": "Steam Ingredients", "category": "action", "icon": "♨️" },
+    { "id": "serve", "label": "Serve", "category": "action", "icon": "✅" }
+  ]
+}
