@@ -1,4 +1,5 @@
 import type { Token } from '../types';
+import { TokenIcon } from './TokenIcon';
 
 interface TokenTileProps {
   token: Token;
@@ -31,9 +32,7 @@ export function TokenTile({
       onKeyDown={onKeyDown}
       onFocus={onFocus}
     >
-      <span className="token-icon" aria-hidden="true">
-        {token.icon ?? '•'}
-      </span>
+      <TokenIcon icon={token.icon} />
       <span className="token-label">{token.label}</span>
     </div>
   );

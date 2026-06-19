@@ -635,10 +635,23 @@ body {
   border-left: 3px solid #6a7a9a;
 }
 
-.token-icon {
+.token-icon,
+.build-slot-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-size: clamp(22px, 3.2vmin, 36px);
   line-height: 1;
   filter: drop-shadow(1px 1px 0 var(--outline));
+}
+
+.token-icon-img {
+  width: clamp(22px, 3.2vmin, 32px);
+  height: clamp(22px, 3.2vmin, 32px);
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  object-fit: contain;
+  pointer-events: none;
 }
 
 .token-label {

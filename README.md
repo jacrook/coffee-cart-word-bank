@@ -50,3 +50,7 @@ Repo: [github.com/jacrook/coffee-cart-word-bank](https://github.com/jacrook/coff
 4. Click **Deploy**
 
 Future pushes to `main` redeploy automatically.
+
+## Credits
+
+Word-bank token icons from [ghostpixxells](https://ghostpixxells.itch.io) ([Pixel Mart](https://ghostpixxells.itch.io/pixel-mart), [Free Pixel foods](https://ghostpixxells.itch.io/pixelfood)) — CC0.

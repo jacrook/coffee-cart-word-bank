@@ -1,4 +1,5 @@
 import type { Token } from '../types';
+import { TokenIcon } from './TokenIcon';
 
 interface BuildSequenceProps {
   builtTokens: Token[];
@@ -97,7 +98,7 @@ export function BuildSequence({
                 isDrinkComplete && index === builtTokens.length - 1 ? ' celebrate' : ''
               }`}
             >
-              <span aria-hidden="true">{token.icon}</span> {token.label}
+              <TokenIcon icon={token.icon} className="build-slot-icon" /> {token.label}
             </div>
           ))
         )}
