@@ -1,4 +1,4 @@
-"""Generate 32x32 to-go coffee cup icons in ghostpixxells-style pixel art."""
+"""Generate custom 32x32 token icons in ghostpixxells-style pixel art."""
 
 from __future__ import annotations
 
@@ -14,6 +14,9 @@ SLEEVE_SHADE = (140, 100, 62, 255)
 LID = (236, 228, 214, 255)
 LID_RIM = (196, 180, 156, 255)
 TRANSPARENT = (0, 0, 0, 0)
+ICE = (196, 232, 255, 255)
+ICE_SHADE = (132, 196, 236, 255)
+ICE_HIGHLIGHT = (244, 252, 255, 255)
 
 
 def set_px(img: Image.Image, x: int, y: int, color: tuple[int, int, int, int]) -> None:
@@ -60,17 +63,42 @@ def draw_cup(height: int, sleeve_rows: int) -> Image.Image:
     return img
 
 
+def draw_ice_cube(img: Image.Image, origin_x: int, origin_y: int, size: int) -> None:
+    for y in range(size):
+        for x in range(size):
+            px = origin_x + x
+            py = origin_y + y
+            on_edge = x == 0 or y == 0 or x == size - 1 or y == size - 1
+            if on_edge:
+                set_px(img, px, py, OUTLINE)
+            elif x == 1 and y == 1:
+                set_px(img, px, py, ICE_HIGHLIGHT)
+            elif x + y >= size - 1:
+                set_px(img, px, py, ICE_SHADE)
+            else:
+                set_px(img, px, py, ICE)
+
+
+def draw_ice_cubes() -> Image.Image:
+    img = Image.new('RGBA', (32, 32), TRANSPARENT)
+    draw_ice_cube(img, 7, 17, 8)
+    draw_ice_cube(img, 17, 17, 8)
+    draw_ice_cube(img, 12, 9, 8)
+    return img
+
+
 def main() -> None:
     out_dir = Path(__file__).resolve().parents[1] / 'public' / 'icons' / 'ghostpixxells'
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    cups = {
+    icons = {
         'cup_8oz.png': draw_cup(height=14, sleeve_rows=4),
         'cup_12oz.png': draw_cup(height=18, sleeve_rows=5),
         'cup_16oz.png': draw_cup(height=22, sleeve_rows=6),
+        'ice.png': draw_ice_cubes(),
     }
 
-    for name, image in cups.items():
+    for name, image in icons.items():
         image.save(out_dir / name)
         print('wrote', out_dir / name)
 

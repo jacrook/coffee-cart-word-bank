@@ -53,4 +53,4 @@ Future pushes to `main` redeploy automatically.
 
 ## Credits
 
-Word-bank token icons from [ghostpixxells](https://ghostpixxells.itch.io) ([Pixel Mart](https://ghostpixxells.itch.io/pixel-mart), [Free Pixel foods](https://ghostpixxells.itch.io/pixelfood)) — CC0. To-go cup icons (8/12/16oz) are custom 32×32 sprites in the same style (`scripts/generate_cup_icons.py`).
+Word-bank token icons from [ghostpixxells](https://ghostpixxells.itch.io) ([Pixel Mart](https://ghostpixxells.itch.io/pixel-mart), [Free Pixel foods](https://ghostpixxells.itch.io/pixelfood)) — CC0. To-go cup and ice cube icons are custom 32×32 sprites in the same style (`scripts/generate_cup_icons.py`).
