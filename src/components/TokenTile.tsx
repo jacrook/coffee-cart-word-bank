@@ -1,4 +1,3 @@
-import { useRef, useState } from 'react';
 import type { Token } from '../types';
 
 interface TokenTileProps {
@@ -7,8 +6,7 @@ interface TokenTileProps {
   isSelected?: boolean;
   onKeyDown?: (event: React.KeyboardEvent) => void;
   onFocus?: () => void;
-  onTouchStart?: (event: React.TouchEvent) => void;
-  onTouchEnd?: (event: React.TouchEvent) => void;
+  onClick?: () => void;
   tokenRef?: (element: HTMLDivElement | null) => void;
 }
 
@@ -18,39 +16,18 @@ export function TokenTile({
   isSelected = false,
   onKeyDown,
   onFocus,
-  onTouchStart,
-  onTouchEnd,
+  onClick,
   tokenRef,
 }: TokenTileProps) {
-  const [dragging, setDragging] = useState(false);
-  const pointerTypeRef = useRef<string>('mouse');
-
   return (
     <div
       ref={tokenRef}
-      className={`token token--${token.category}${dragging ? ' dragging' : ''}${
-        isSelected ? ' token--selected' : ''
-      }`}
+      className={`token token--${token.category}${isSelected ? ' token--selected' : ''}`}
       role="gridcell"
       tabIndex={tabIndex}
       aria-selected={isSelected}
       aria-label={token.label}
-      draggable
-      onPointerDown={(e) => {
-        pointerTypeRef.current = e.pointerType;
-      }}
-      onDragStart={(e) => {
-        if (pointerTypeRef.current === 'touch') {
-          e.preventDefault();
-          return;
-        }
-        e.dataTransfer.setData('text/plain', token.id);
-        e.dataTransfer.effectAllowed = 'move';
-        setDragging(true);
-      }}
-      onDragEnd={() => setDragging(false)}
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}
+      onClick={onClick}
       onKeyDown={onKeyDown}
       onFocus={onFocus}
     >

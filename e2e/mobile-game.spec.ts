@@ -29,7 +29,7 @@ async function expectBuildProgress(page: Page, completedSteps: number) {
 }
 
 test.describe('mobile game flow', () => {
-  test('loads app, selects rookie, tap-selects token and places via build area', async ({ page }) => {
+  test('tap-selects token and places via build area', async ({ page }) => {
     await startRookieGame(page);
 
     const initialProgress = await page.locator('.step-progress-text').textContent();
@@ -44,22 +44,15 @@ test.describe('mobile game flow', () => {
     await expect(page.locator('.build-empty')).toHaveCount(0);
   });
 
-  test('loads app, selects rookie, drags token into build area', async ({ page }) => {
+  test('click-selects token and places via build area on desktop', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
     await startRookieGame(page);
 
     const cupToken = await getCupToken(page);
-    const buildArea = page.locator('.build-sequence');
+    await cupToken.click();
+    await expect(cupToken).toHaveClass(/token--selected/);
 
-    const tokenBox = await cupToken.boundingBox();
-    const buildBox = await buildArea.boundingBox();
-    expect(tokenBox).not.toBeNull();
-    expect(buildBox).not.toBeNull();
-
-    await cupToken.dragTo(buildArea, {
-      sourcePosition: { x: tokenBox!.width / 2, y: tokenBox!.height / 2 },
-      targetPosition: { x: buildBox!.width / 2, y: buildBox!.height / 2 },
-    });
-
+    await page.locator('.build-sequence').click();
     await expectBuildProgress(page, 1);
   });
 });

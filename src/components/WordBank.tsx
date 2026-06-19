@@ -10,8 +10,7 @@ interface WordBankProps {
   gridRef: React.RefObject<HTMLDivElement | null>;
   onTokenKeyDown: (event: React.KeyboardEvent, index: number) => void;
   onTokenFocus: (index: number) => void;
-  onTokenTouchStart: (tokenId: string, event: React.TouchEvent) => void;
-  onTokenTouchEnd: (tokenId: string, event: React.TouchEvent) => void;
+  onTokenClick: (tokenId: string) => void;
   setTokenRef: (index: number, element: HTMLDivElement | null) => void;
 }
 
@@ -24,8 +23,7 @@ export function WordBank({
   gridRef,
   onTokenKeyDown,
   onTokenFocus,
-  onTokenTouchStart,
-  onTokenTouchEnd,
+  onTokenClick,
   setTokenRef,
 }: WordBankProps) {
   return (
@@ -35,8 +33,8 @@ export function WordBank({
         <span className="word-bank-count">{tokens.length} items</span>
       </div>
       <p className="word-bank-hint" id="word-bank-instructions">
-        Tap a token then tap the build area, drag tokens into the sequence, or use arrow keys and
-        Enter/Space to select
+        Click a token, then click the build area to place it. Use arrow keys and Enter/Space for
+        keyboard play.
       </p>
       <div className="token-grid-scroll">
       <div
@@ -55,8 +53,7 @@ export function WordBank({
             isSelected={selectedTokenId === token.id}
             onKeyDown={(event) => onTokenKeyDown(event, index)}
             onFocus={() => onTokenFocus(index)}
-            onTouchStart={(event) => onTokenTouchStart(token.id, event)}
-            onTouchEnd={(event) => onTokenTouchEnd(token.id, event)}
+            onClick={() => onTokenClick(token.id)}
             tokenRef={(element) => setTokenRef(index, element)}
           />
         ))}

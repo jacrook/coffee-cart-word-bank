@@ -2,15 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Token } from '../types';
 import { computeGridColumns } from '../styles/layoutTokens';
 
-const DRAG_THRESHOLD_PX = 10;
-
 type FocusZone = 'grid' | 'build';
-
-interface TouchStart {
-  x: number;
-  y: number;
-  tokenId: string;
-}
 
 interface UseWordBankA11yOptions {
   tokens: Token[];
@@ -29,31 +21,17 @@ export function useWordBankA11y({
   const [selectedTokenId, setSelectedTokenId] = useState<string | null>(null);
   const [focusZone, setFocusZone] = useState<FocusZone>('grid');
   const [announcement, setAnnouncement] = useState('');
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragTokenId, setDragTokenId] = useState<string | null>(null);
-  const [dragPosition, setDragPosition] = useState<{ x: number; y: number } | null>(null);
-  const [isOverDropZone, setIsOverDropZone] = useState(false);
 
   const [gridColumns, setGridColumns] = useState(3);
   const tokenRefs = useRef<(HTMLDivElement | null)[]>([]);
   const gridRef = useRef<HTMLDivElement | null>(null);
   const buildAreaRef = useRef<HTMLDivElement | null>(null);
-  const touchStartRef = useRef<TouchStart | null>(null);
-  const isDraggingRef = useRef(false);
   const tokensKey = tokens.map((t) => t.id).join(',');
-
-  const dragToken = dragTokenId ? tokens.find((t) => t.id === dragTokenId) ?? null : null;
 
   useEffect(() => {
     setFocusedIndex(0);
     setSelectedTokenId(null);
     setFocusZone('grid');
-    isDraggingRef.current = false;
-    setIsDragging(false);
-    setDragTokenId(null);
-    setDragPosition(null);
-    setIsOverDropZone(false);
-    touchStartRef.current = null;
   }, [tokensKey]);
 
   useEffect(() => {
@@ -87,37 +65,37 @@ export function useWordBankA11y({
     tokenRefs.current[focusedIndex]?.focus();
   }, [focusedIndex, focusZone, gameComplete]);
 
-  const isOverBuildArea = useCallback((x: number, y: number) => {
-    const el = buildAreaRef.current;
-    if (el) {
-      const rect = el.getBoundingClientRect();
-      return (
-        x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom
-      );
-    }
-    return Boolean(document.elementFromPoint(x, y)?.closest('.build-sequence'));
-  }, []);
-
   const clearSelection = useCallback(() => {
     setSelectedTokenId(null);
     setAnnouncement('Selection cleared');
   }, []);
 
+  const toggleTokenSelection = useCallback(
+    (tokenId: string) => {
+      if (gameComplete) return;
+
+      const token = tokens.find((t) => t.id === tokenId);
+      if (!token) return;
+
+      setSelectedTokenId((prev) => {
+        if (prev === tokenId) {
+          setAnnouncement(`${token.label} deselected`);
+          return null;
+        }
+        setAnnouncement(`Selected ${token.label}. Click the build area to place.`);
+        return tokenId;
+      });
+    },
+    [gameComplete, tokens],
+  );
+
   const selectTokenAtIndex = useCallback(
     (index: number) => {
       const token = tokens[index];
       if (!token) return;
-
-      setSelectedTokenId((prev) => {
-        if (prev === token.id) {
-          setAnnouncement(`${token.label} deselected`);
-          return null;
-        }
-        setAnnouncement(`Selected ${token.label}. Press Enter in build area to place.`);
-        return token.id;
-      });
+      toggleTokenSelection(token.id);
     },
-    [tokens],
+    [tokens, toggleTokenSelection],
   );
 
   const placeSelected = useCallback(() => {
@@ -132,53 +110,16 @@ export function useWordBankA11y({
     setSelectedTokenId(null);
   }, [selectedTokenId, onDrop, gameComplete]);
 
-  const finishDrag = useCallback(
-    (clientX: number, clientY: number) => {
-      if (isDraggingRef.current && dragTokenId && isOverBuildArea(clientX, clientY)) {
-        onDrop(dragTokenId);
-      }
-      isDraggingRef.current = false;
-      setIsDragging(false);
-      setDragTokenId(null);
-      setDragPosition(null);
-      setIsOverDropZone(false);
-      touchStartRef.current = null;
+  const handleTokenClick = useCallback(
+    (tokenId: string) => {
+      toggleTokenSelection(tokenId);
     },
-    [dragTokenId, isOverBuildArea, onDrop],
+    [toggleTokenSelection],
   );
 
-  const handleTokenTouchStart = useCallback((tokenId: string, e: React.TouchEvent) => {
-    const touch = e.touches[0];
-    if (!touch) return;
-    touchStartRef.current = { x: touch.clientX, y: touch.clientY, tokenId };
-  }, []);
-
-  const handleTokenTouchEnd = useCallback((tokenId: string, e: React.TouchEvent) => {
-    if (isDraggingRef.current) return;
-
-    const start = touchStartRef.current;
-    if (!start || start.tokenId !== tokenId) return;
-
-    const touch = e.changedTouches[0];
-    if (!touch) return;
-
-    const dx = touch.clientX - start.x;
-    const dy = touch.clientY - start.y;
-    const dist = Math.hypot(dx, dy);
-
-    if (dist < DRAG_THRESHOLD_PX) {
-      setSelectedTokenId((prev) => (prev === tokenId ? null : tokenId));
-    }
-
-    touchStartRef.current = null;
-  }, []);
-
   const handleBuildAreaTap = useCallback(() => {
-    if (selectedTokenId) {
-      onDrop(selectedTokenId);
-      setSelectedTokenId(null);
-    }
-  }, [onDrop, selectedTokenId]);
+    placeSelected();
+  }, [placeSelected]);
 
   const navigateGrid = useCallback(
     (direction: 'up' | 'down' | 'left' | 'right') => {
@@ -245,6 +186,7 @@ export function useWordBankA11y({
 
       switch (event.key) {
         case 'Enter':
+        case ' ':
           event.preventDefault();
           placeSelected();
           break;
@@ -272,76 +214,6 @@ export function useWordBankA11y({
     setFocusZone('build');
   }, []);
 
-  // Register document touch listeners on mount — gated by touchStartRef, not isDragging.
-  // Waiting for isDragging caused a chicken-and-egg bug: touchmove must fire to set
-  // isDragging, but listeners were only attached after isDragging became true.
-  useEffect(() => {
-    const onTouchMove = (e: TouchEvent) => {
-      const start = touchStartRef.current;
-      if (!start) return;
-
-      const touch = e.touches[0];
-      if (!touch) return;
-
-      const dx = touch.clientX - start.x;
-      const dy = touch.clientY - start.y;
-      const dist = Math.hypot(dx, dy);
-
-      if (!isDraggingRef.current && dist > DRAG_THRESHOLD_PX) {
-        isDraggingRef.current = true;
-        setIsDragging(true);
-        setDragTokenId(start.tokenId);
-        setSelectedTokenId(null);
-      }
-
-      if (isDraggingRef.current) {
-        e.preventDefault();
-        setDragPosition({ x: touch.clientX, y: touch.clientY });
-        setIsOverDropZone(isOverBuildArea(touch.clientX, touch.clientY));
-      }
-    };
-
-    const onTouchEnd = (e: TouchEvent) => {
-      if (!isDraggingRef.current) return;
-      const touch = e.changedTouches[0];
-      if (!touch) return;
-      finishDrag(touch.clientX, touch.clientY);
-    };
-
-    const onTouchCancel = () => {
-      isDraggingRef.current = false;
-      setIsDragging(false);
-      setDragTokenId(null);
-      setDragPosition(null);
-      setIsOverDropZone(false);
-      touchStartRef.current = null;
-    };
-
-    document.addEventListener('touchmove', onTouchMove, { passive: false });
-    document.addEventListener('touchend', onTouchEnd);
-    document.addEventListener('touchcancel', onTouchCancel);
-
-    return () => {
-      document.removeEventListener('touchmove', onTouchMove);
-      document.removeEventListener('touchend', onTouchEnd);
-      document.removeEventListener('touchcancel', onTouchCancel);
-    };
-  }, [finishDrag, isOverBuildArea]);
-
-  useEffect(() => {
-    if (!isDragging) return;
-
-    const prevOverflow = document.body.style.overflow;
-    const prevTouchAction = document.body.style.touchAction;
-    document.body.style.overflow = 'hidden';
-    document.body.style.touchAction = 'none';
-
-    return () => {
-      document.body.style.overflow = prevOverflow;
-      document.body.style.touchAction = prevTouchAction;
-    };
-  }, [isDragging]);
-
   useEffect(() => {
     if (gameComplete) return;
 
@@ -362,17 +234,12 @@ export function useWordBankA11y({
     selectedTokenId,
     focusZone,
     announcement,
-    isDragging,
-    dragToken,
-    dragPosition,
-    isOverDropZone,
     buildAreaRef,
     gridRef,
     setTokenRef,
     handleTokenKeyDown,
     handleTokenFocus,
-    handleTokenTouchStart,
-    handleTokenTouchEnd,
+    handleTokenClick,
     handleBuildKeyDown,
     handleBuildFocus,
     handleBuildAreaTap,

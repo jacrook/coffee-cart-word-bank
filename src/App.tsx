@@ -47,10 +47,8 @@ function GameScreen({ config, onQuit }: { config: SessionConfig; onQuit: () => v
             feedbackType={session.feedbackType}
             announcement={a11y.announcement}
             selectedTokenId={a11y.selectedTokenId}
-            onDrop={session.handleDrop}
             onUndo={session.handleUndo}
             onClear={session.handleClearSequence}
-            isOverDropZone={a11y.isOverDropZone}
             buildAreaRef={a11y.buildAreaRef}
             onBuildKeyDown={a11y.handleBuildKeyDown}
             onBuildFocus={a11y.handleBuildFocus}
@@ -67,25 +65,10 @@ function GameScreen({ config, onQuit }: { config: SessionConfig; onQuit: () => v
           gridRef={a11y.gridRef}
           onTokenKeyDown={a11y.handleTokenKeyDown}
           onTokenFocus={a11y.handleTokenFocus}
-          onTokenTouchStart={a11y.handleTokenTouchStart}
-          onTokenTouchEnd={a11y.handleTokenTouchEnd}
+          onTokenClick={a11y.handleTokenClick}
           setTokenRef={a11y.setTokenRef}
         />
       </div>
-
-      {a11y.isDragging && a11y.dragToken && a11y.dragPosition && (
-        <div
-          className={`touch-drag-ghost token token--${a11y.dragToken.category}`}
-          style={{
-            left: a11y.dragPosition.x,
-            top: a11y.dragPosition.y,
-          }}
-          aria-hidden="true"
-        >
-          <span className="token-icon">{a11y.dragToken.icon ?? '•'}</span>
-          <span className="token-label">{a11y.dragToken.label}</span>
-        </div>
-      )}
 
       <footer className="game-footer">
         {session.gameComplete && (

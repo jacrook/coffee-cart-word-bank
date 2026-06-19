@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useWordBankA11y } from '../useWordBankA11y';
 import type { Token } from '../../types';
@@ -9,23 +9,6 @@ const mockTokens: Token[] = [
   { id: 'steam', label: 'Steam', category: 'action', icon: '♨' },
 ];
 
-function createTouch(target: Element, x: number, y: number, identifier = 0) {
-  return {
-    identifier,
-    target,
-    clientX: x,
-    clientY: y,
-    pageX: x,
-    pageY: y,
-    screenX: x,
-    screenY: y,
-    radiusX: 1,
-    radiusY: 1,
-    rotationAngle: 0,
-    force: 1,
-  };
-}
-
 interface HarnessProps {
   tokens?: Token[];
   onDrop: (tokenId: string) => void;
@@ -33,7 +16,7 @@ interface HarnessProps {
   gameComplete?: boolean;
 }
 
-function TouchHarness({
+function ClickHarness({
   tokens = mockTokens,
   onDrop,
   feedback = '',
@@ -55,38 +38,19 @@ function TouchHarness({
             key={token.id}
             ref={(el) => a11y.setTokenRef(index, el)}
             data-testid={`token-${token.id}`}
-            onTouchStart={(e) => a11y.handleTokenTouchStart(token.id, e)}
-            onTouchEnd={(e) => a11y.handleTokenTouchEnd(token.id, e)}
+            onClick={() => a11y.handleTokenClick(token.id)}
           >
             {token.label}
           </div>
         ))}
       </div>
       <span data-testid="selected">{a11y.selectedTokenId ?? ''}</span>
-      <span data-testid="dragging">{a11y.isDragging ? 'yes' : 'no'}</span>
-      <span data-testid="drag-token">{a11y.dragToken?.id ?? ''}</span>
-      <span data-testid="over-drop">{a11y.isOverDropZone ? 'yes' : 'no'}</span>
+      <span data-testid="announcement">{a11y.announcement}</span>
     </div>
   );
 }
 
-function mockBuildAreaRect(left: number, top: number, width: number, height: number) {
-  const buildArea = screen.getByTestId('build-area');
-  buildArea.getBoundingClientRect = () =>
-    ({
-      left,
-      top,
-      right: left + width,
-      bottom: top + height,
-      width,
-      height,
-      x: left,
-      y: top,
-      toJSON: () => ({}),
-    }) as DOMRect;
-}
-
-describe('useWordBankA11y mobile touch', () => {
+describe('useWordBankA11y click-to-place', () => {
   const onDrop = vi.fn();
 
   beforeEach(() => {
@@ -100,215 +64,50 @@ describe('useWordBankA11y mobile touch', () => {
     );
   });
 
-  describe('tap-to-select', () => {
-    it('selects a token on short tap without movement', () => {
-      render(<TouchHarness onDrop={onDrop} />);
-      const token = screen.getByTestId('token-espresso');
+  it('selects a token on click', () => {
+    render(<ClickHarness onDrop={onDrop} />);
 
-      fireEvent.touchStart(token, {
-        touches: [createTouch(token, 50, 50)],
-      });
-      fireEvent.touchEnd(token, {
-        changedTouches: [createTouch(token, 50, 50)],
-      });
+    fireEvent.click(screen.getByTestId('token-espresso'));
 
-      expect(screen.getByTestId('selected').textContent).toBe('espresso');
-      expect(onDrop).not.toHaveBeenCalled();
-    });
-
-    it('deselects a token when tapping the same token again', () => {
-      render(<TouchHarness onDrop={onDrop} />);
-      const token = screen.getByTestId('token-espresso');
-
-      fireEvent.touchStart(token, { touches: [createTouch(token, 50, 50)] });
-      fireEvent.touchEnd(token, { changedTouches: [createTouch(token, 50, 50)] });
-      expect(screen.getByTestId('selected').textContent).toBe('espresso');
-
-      fireEvent.touchStart(token, { touches: [createTouch(token, 50, 50)] });
-      fireEvent.touchEnd(token, { changedTouches: [createTouch(token, 50, 50)] });
-      expect(screen.getByTestId('selected').textContent).toBe('');
-    });
-
-    it('does not select when movement exceeds tap threshold', () => {
-      render(<TouchHarness onDrop={onDrop} />);
-      const token = screen.getByTestId('token-espresso');
-
-      fireEvent.touchStart(token, { touches: [createTouch(token, 50, 50)] });
-
-      act(() => {
-        fireEvent.touchMove(document, {
-          touches: [createTouch(token, 80, 50)],
-        });
-      });
-
-      expect(screen.getByTestId('selected').textContent).toBe('');
-      expect(screen.getByTestId('dragging').textContent).toBe('yes');
-
-      // touchend bubbles to document listener and finishes the drag
-      fireEvent.touchEnd(token, { changedTouches: [createTouch(token, 80, 50)] });
-
-      expect(screen.getByTestId('selected').textContent).toBe('');
-      expect(onDrop).not.toHaveBeenCalled();
-      expect(screen.getByTestId('dragging').textContent).toBe('no');
-    });
+    expect(screen.getByTestId('selected').textContent).toBe('espresso');
+    expect(screen.getByTestId('announcement').textContent).toContain('Selected Espresso');
+    expect(onDrop).not.toHaveBeenCalled();
   });
 
-  describe('tap-to-place', () => {
-    it('places selected token when build area is tapped', () => {
-      render(<TouchHarness onDrop={onDrop} />);
-      const token = screen.getByTestId('token-espresso');
-      const buildArea = screen.getByTestId('build-area');
+  it('deselects a token when clicking the same token again', () => {
+    render(<ClickHarness onDrop={onDrop} />);
+    const token = screen.getByTestId('token-espresso');
 
-      fireEvent.touchStart(token, { touches: [createTouch(token, 50, 50)] });
-      fireEvent.touchEnd(token, { changedTouches: [createTouch(token, 50, 50)] });
-      expect(screen.getByTestId('selected').textContent).toBe('espresso');
+    fireEvent.click(token);
+    fireEvent.click(token);
 
-      fireEvent.click(buildArea);
-
-      expect(onDrop).toHaveBeenCalledWith('espresso');
-      expect(screen.getByTestId('selected').textContent).toBe('');
-    });
+    expect(screen.getByTestId('selected').textContent).toBe('');
   });
 
-  describe('touch drag', () => {
-    it('starts dragging after crossing movement threshold', () => {
-      render(<TouchHarness onDrop={onDrop} />);
-      const token = screen.getByTestId('token-espresso');
+  it('places selected token when build area is clicked', () => {
+    render(<ClickHarness onDrop={onDrop} />);
 
-      fireEvent.touchStart(token, { touches: [createTouch(token, 100, 100)] });
+    fireEvent.click(screen.getByTestId('token-espresso'));
+    fireEvent.click(screen.getByTestId('build-area'));
 
-      act(() => {
-        fireEvent.touchMove(document, {
-          touches: [createTouch(token, 100, 100)],
-        });
-      });
-      expect(screen.getByTestId('dragging').textContent).toBe('no');
+    expect(onDrop).toHaveBeenCalledWith('espresso');
+    expect(screen.getByTestId('selected').textContent).toBe('');
+  });
 
-      act(() => {
-        fireEvent.touchMove(document, {
-          touches: [createTouch(token, 115, 100)],
-        });
-      });
+  it('does not place when build area is clicked without a selection', () => {
+    render(<ClickHarness onDrop={onDrop} />);
 
-      expect(screen.getByTestId('dragging').textContent).toBe('yes');
-      expect(screen.getByTestId('drag-token').textContent).toBe('espresso');
-    });
+    fireEvent.click(screen.getByTestId('build-area'));
 
-    it('sets isOverDropZone when drag position is over build area', () => {
-      render(<TouchHarness onDrop={onDrop} />);
-      mockBuildAreaRect(200, 50, 100, 80);
+    expect(onDrop).not.toHaveBeenCalled();
+  });
 
-      const token = screen.getByTestId('token-espresso');
-      fireEvent.touchStart(token, { touches: [createTouch(token, 50, 50)] });
+  it('switches selection when a different token is clicked', () => {
+    render(<ClickHarness onDrop={onDrop} />);
 
-      act(() => {
-        fireEvent.touchMove(document, {
-          touches: [createTouch(token, 250, 80)],
-        });
-      });
+    fireEvent.click(screen.getByTestId('token-espresso'));
+    fireEvent.click(screen.getByTestId('token-steam'));
 
-      expect(screen.getByTestId('dragging').textContent).toBe('yes');
-      expect(screen.getByTestId('over-drop').textContent).toBe('yes');
-    });
-
-    it('does not set isOverDropZone when drag position is outside build area', () => {
-      render(<TouchHarness onDrop={onDrop} />);
-      mockBuildAreaRect(200, 50, 100, 80);
-
-      const token = screen.getByTestId('token-espresso');
-      fireEvent.touchStart(token, { touches: [createTouch(token, 50, 50)] });
-
-      act(() => {
-        fireEvent.touchMove(document, {
-          touches: [createTouch(token, 50, 200)],
-        });
-      });
-
-      expect(screen.getByTestId('dragging').textContent).toBe('yes');
-      expect(screen.getByTestId('over-drop').textContent).toBe('no');
-    });
-
-    it('drops token on touchend when released over build area', () => {
-      render(<TouchHarness onDrop={onDrop} />);
-      mockBuildAreaRect(200, 50, 100, 80);
-
-      const token = screen.getByTestId('token-espresso');
-      fireEvent.touchStart(token, { touches: [createTouch(token, 50, 50)] });
-
-      act(() => {
-        fireEvent.touchMove(document, {
-          touches: [createTouch(token, 250, 80)],
-        });
-      });
-
-      act(() => {
-        fireEvent.touchEnd(document, {
-          changedTouches: [createTouch(token, 250, 80)],
-        });
-      });
-
-      expect(onDrop).toHaveBeenCalledWith('espresso');
-      expect(screen.getByTestId('dragging').textContent).toBe('no');
-    });
-
-    it('does not drop token when released outside build area', () => {
-      render(<TouchHarness onDrop={onDrop} />);
-      mockBuildAreaRect(200, 50, 100, 80);
-
-      const token = screen.getByTestId('token-espresso');
-      fireEvent.touchStart(token, { touches: [createTouch(token, 50, 50)] });
-
-      act(() => {
-        fireEvent.touchMove(document, {
-          touches: [createTouch(token, 50, 200)],
-        });
-      });
-
-      act(() => {
-        fireEvent.touchEnd(document, {
-          changedTouches: [createTouch(token, 50, 200)],
-        });
-      });
-
-      expect(onDrop).not.toHaveBeenCalled();
-      expect(screen.getByTestId('dragging').textContent).toBe('no');
-    });
-
-    it('clears pending touch state on touchcancel before drag threshold', () => {
-      render(<TouchHarness onDrop={onDrop} />);
-      const token = screen.getByTestId('token-espresso');
-
-      fireEvent.touchStart(token, { touches: [createTouch(token, 50, 50)] });
-
-      act(() => {
-        fireEvent.touchCancel(document);
-      });
-
-      act(() => {
-        fireEvent.touchMove(document, {
-          touches: [createTouch(token, 80, 50)],
-        });
-      });
-
-      expect(screen.getByTestId('dragging').textContent).toBe('no');
-    });
-
-    it('clears selection when drag starts', () => {
-      render(<TouchHarness onDrop={onDrop} />);
-      const token = screen.getByTestId('token-espresso');
-
-      fireEvent.touchStart(token, { touches: [createTouch(token, 50, 50)] });
-      fireEvent.touchEnd(token, { changedTouches: [createTouch(token, 50, 50)] });
-      expect(screen.getByTestId('selected').textContent).toBe('espresso');
-
-      fireEvent.touchStart(token, { touches: [createTouch(token, 50, 50)] });
-      act(() => {
-        fireEvent.touchMove(document, {
-          touches: [createTouch(token, 80, 50)],
-        });
-      });
-
-      expect(screen.getByTestId('selected').textContent).toBe('');
-    });
+    expect(screen.getByTestId('selected').textContent).toBe('steam');
   });
 });

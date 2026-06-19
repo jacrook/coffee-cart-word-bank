@@ -377,11 +377,6 @@ body {
   transition: border-color 200ms ease, background 200ms ease;
 }
 
-.build-sequence.drag-over {
-  border-color: var(--gold);
-  background: #0a0c08;
-}
-
 .build-sequence.has-selection {
   border-color: var(--gold);
 }
@@ -586,9 +581,9 @@ body {
   font-size: var(--font-sm);
   text-align: center;
   line-height: 1.2;
-  cursor: grab;
+  cursor: pointer;
   user-select: none;
-  touch-action: none;
+  touch-action: manipulation;
   transition: transform 80ms steps(2), border-color 80ms;
 }
 
@@ -598,13 +593,11 @@ body {
   box-shadow: 3px 3px 0 var(--outline);
 }
 
-.token:active:not(.used),
-.token.dragging {
-  opacity: 0.6;
+.token:active:not(.used) {
+  opacity: 0.85;
   border-color: var(--gold);
   transform: translate(1px, 1px);
   box-shadow: 1px 1px 0 var(--outline);
-  cursor: grabbing;
 }
 
 .token:focus-visible {
@@ -651,18 +644,6 @@ body {
 .token-label {
   word-break: break-word;
   hyphens: auto;
-}
-
-.touch-drag-ghost {
-  position: fixed;
-  z-index: 1000;
-  width: 72px;
-  min-height: 58px;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
-  opacity: 0.9;
-  border-color: var(--gold-bright);
-  box-shadow: var(--pixel-shadow), 0 0 8px rgba(152, 132, 60, 0.5);
 }
 
 /* ── Difficulty screen ───────────────────────────── */
