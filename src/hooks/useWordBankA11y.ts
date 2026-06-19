@@ -1,15 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Token } from '../types';
+import { computeGridColumns } from '../styles/layoutTokens';
 
-const MIN_GRID_COLUMNS = 3;
-const TOKEN_CELL_MIN_PX = 96;
-const GRID_GAP_PX = 8;
 const DRAG_THRESHOLD_PX = 10;
-
-function computeGridColumns(containerWidth: number): number {
-  if (containerWidth <= 0) return MIN_GRID_COLUMNS;
-  return Math.max(MIN_GRID_COLUMNS, Math.floor((containerWidth + GRID_GAP_PX) / (TOKEN_CELL_MIN_PX + GRID_GAP_PX)));
-}
 
 type FocusZone = 'grid' | 'build';
 
@@ -41,7 +34,7 @@ export function useWordBankA11y({
   const [dragPosition, setDragPosition] = useState<{ x: number; y: number } | null>(null);
   const [isOverDropZone, setIsOverDropZone] = useState(false);
 
-  const [gridColumns, setGridColumns] = useState(MIN_GRID_COLUMNS);
+  const [gridColumns, setGridColumns] = useState(3);
   const tokenRefs = useRef<(HTMLDivElement | null)[]>([]);
   const gridRef = useRef<HTMLDivElement | null>(null);
   const buildAreaRef = useRef<HTMLDivElement | null>(null);
@@ -74,7 +67,7 @@ export function useWordBankA11y({
     if (!grid) return;
 
     const updateColumns = () => {
-      setGridColumns(computeGridColumns(grid.clientWidth));
+      setGridColumns(computeGridColumns(grid.clientWidth, window.innerWidth));
     };
 
     updateColumns();
@@ -95,8 +88,14 @@ export function useWordBankA11y({
   }, [focusedIndex, focusZone, gameComplete]);
 
   const isOverBuildArea = useCallback((x: number, y: number) => {
-    const el = buildAreaRef.current ?? document.elementFromPoint(x, y)?.closest('.build-sequence');
-    return Boolean(el);
+    const el = buildAreaRef.current;
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      return (
+        x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom
+      );
+    }
+    return Boolean(document.elementFromPoint(x, y)?.closest('.build-sequence'));
   }, []);
 
   const clearSelection = useCallback(() => {
@@ -273,15 +272,16 @@ export function useWordBankA11y({
     setFocusZone('build');
   }, []);
 
+  // Register document touch listeners on mount — gated by touchStartRef, not isDragging.
+  // Waiting for isDragging caused a chicken-and-egg bug: touchmove must fire to set
+  // isDragging, but listeners were only attached after isDragging became true.
   useEffect(() => {
-    if (!isDragging) return;
-
     const onTouchMove = (e: TouchEvent) => {
-      const touch = e.touches[0];
-      if (!touch) return;
-
       const start = touchStartRef.current;
       if (!start) return;
+
+      const touch = e.touches[0];
+      if (!touch) return;
 
       const dx = touch.clientX - start.x;
       const dy = touch.clientY - start.y;
@@ -309,7 +309,6 @@ export function useWordBankA11y({
     };
 
     const onTouchCancel = () => {
-      if (!isDraggingRef.current) return;
       isDraggingRef.current = false;
       setIsDragging(false);
       setDragTokenId(null);
@@ -327,7 +326,7 @@ export function useWordBankA11y({
       document.removeEventListener('touchend', onTouchEnd);
       document.removeEventListener('touchcancel', onTouchCancel);
     };
-  }, [finishDrag, isDragging, isOverBuildArea]);
+  }, [finishDrag, isOverBuildArea]);
 
   useEffect(() => {
     if (!isDragging) return;

@@ -81,6 +81,11 @@ body {
   flex-direction: column;
   position: relative;
   overflow: hidden;
+  padding:
+    env(safe-area-inset-top, 0)
+    env(safe-area-inset-right, 0)
+    env(safe-area-inset-bottom, 0)
+    env(safe-area-inset-left, 0);
 }
 
 .game-shell::before {
@@ -133,6 +138,7 @@ body {
 .game-footer .difficulty-btn {
   flex: 1;
   max-width: none;
+  min-height: 44px;
   text-align: center;
   font-size: var(--font-md);
   padding: clamp(10px, 1.4vmin, 14px);
@@ -439,7 +445,8 @@ body {
 
 .build-action-btn {
   flex: 1;
-  padding: 8px 10px;
+  min-height: 44px;
+  padding: 10px 12px;
   background: var(--wood);
   border: 2px solid var(--inner-border);
   box-shadow: var(--pixel-shadow-sm);
@@ -715,20 +722,23 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
+  min-height: 44px;
   font-size: var(--font-md);
   color: var(--cream);
   cursor: pointer;
 }
 
 .practice-toggle input {
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
   accent-color: var(--gold);
 }
 
 .practice-select {
   width: 100%;
   margin-top: 8px;
+  min-height: 44px;
   padding: 10px;
   background: var(--dark-bg);
   border: 2px solid var(--inner-border);
@@ -863,12 +873,66 @@ body {
 }
 
 @media (max-width: 480px) {
+  :root {
+    --token-cell-min: clamp(72px, 22vw, 96px);
+  }
+
   .hud {
     flex-wrap: wrap;
+    row-gap: var(--space-sm);
   }
 
   .hud-stat {
+    flex: 1 1 calc(50% - 4px);
     min-width: 44px;
+  }
+
+  .hud-stat--wide {
+    flex: 1 1 100%;
+  }
+
+  .game-sidebar {
+    flex-shrink: 1;
+    min-height: 0;
+    max-height: min(46dvh, 400px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  .build-header {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .build-label {
+    flex: 1 1 100%;
+    font-size: var(--font-xs);
+  }
+
+  .build-sequence {
+    max-height: clamp(96px, 18dvh, 160px);
+  }
+
+  .order-text {
+    font-size: var(--font-lg);
+    word-break: break-word;
+  }
+
+  .word-bank-hint {
+    font-size: var(--font-xs);
+    line-height: 1.35;
+  }
+
+  .token {
+    min-height: 72px;
+  }
+
+  .panel-badge {
+    font-size: clamp(10px, 2.8vw, 12px);
+    max-width: 55%;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 

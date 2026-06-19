@@ -35,8 +35,8 @@ export function WordBank({
         <span className="word-bank-count">{tokens.length} items</span>
       </div>
       <p className="word-bank-hint" id="word-bank-instructions">
-        Drag tokens up to the build sequence, or use arrow keys to navigate and Enter/Space to
-        select
+        Tap a token then tap the build area, drag tokens into the sequence, or use arrow keys and
+        Enter/Space to select
       </p>
       <div className="token-grid-scroll">
       <div

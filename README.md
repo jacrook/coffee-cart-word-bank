@@ -11,6 +11,32 @@ npm test
 npm run build
 ```
 
+## End-to-end tests (Playwright)
+
+Mobile E2E tests run against a production build served by Vite preview (iPhone 14 and Pixel 7 device profiles).
+
+```bash
+# First-time setup: install Playwright browsers
+npx playwright install chromium webkit
+
+# Run all mobile E2E tests (builds app, starts preview server automatically)
+npm run test:e2e
+
+# Run against an already-running preview server
+npm run build && npm run preview
+npm run test:e2e
+
+# Run against the dev server instead (override base URL)
+npm run dev
+PLAYWRIGHT_BASE_URL=http://127.0.0.1:5173 npm run test:e2e
+```
+
+View the HTML report after a run:
+
+```bash
+npx playwright show-report
+```
+
 ## Deploy (Vercel + GitHub)
 
 Repo: [github.com/jacrook/coffee-cart-word-bank](https://github.com/jacrook/coffee-cart-word-bank)
